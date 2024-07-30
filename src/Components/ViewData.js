@@ -84,19 +84,19 @@ export default function ViewData() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
-                {data.map((item) => (
-                  <tr key={item.id}>
-                    <td className="px-6 py-4 text-sm text-gray-500">{item.name}</td>
-                    <td className="px-6 py-4 text-sm text-gray-500">{item.gender}</td>
-                    <td className="px-6 py-4 text-sm text-gray-500">{item.placeOfBirth}</td>
-                    <td className="px-6 py-4 text-sm text-gray-500">{item.city}</td>
-                    <td className="px-6 py-4 text-sm text-gray-500">{item.idCardNumber}</td>
-                    <td className="px-6 py-4 text-sm text-gray-500">{item.headline}</td>
-                    <td className="px-6 py-4 text-sm text-gray-500">{item.phone}</td>
-                    <td className="px-6 py-4 text-sm text-gray-500">{item.address}</td>
+                {data.map((formdata) => (
+                  <tr key={formdata.id}>
+                    <td className="px-6 py-4 text-sm text-gray-500">{formdata.name}</td>
+                    <td className="px-6 py-4 text-sm text-gray-500">{formdata.gender}</td>
+                    <td className="px-6 py-4 text-sm text-gray-500">{formdata.placeOfBirth}</td>
+                    <td className="px-6 py-4 text-sm text-gray-500">{formdata.city}</td>
+                    <td className="px-6 py-4 text-sm text-gray-500">{formdata.idCardNumber}</td>
+                    <td className="px-6 py-4 text-sm text-gray-500">{formdata.headline}</td>
+                    <td className="px-6 py-4 text-sm text-gray-500">{formdata.phone}</td>
+                    <td className="px-6 py-4 text-sm text-gray-500">{formdata.address}</td>
                     <td className="px-6 py-4 text-sm text-gray-500">
-                      {item.invoice && (
-                        <a href={item.invoice} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+                      {formdata.invoice && (
+                        <a href={formdata.invoice} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
                           View Invoice
                         </a>
                       )}

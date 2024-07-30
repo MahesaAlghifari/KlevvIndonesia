@@ -67,7 +67,7 @@ export default function FormWithApi() {
     });
 
     try {
-      const response = await fetch('/api/submit-form', {
+      const response = await fetch('/Server/server', {
         method: 'POST',
         body: formDataWithFile,
       });
@@ -87,7 +87,7 @@ export default function FormWithApi() {
           address: '',
           invoice: null,
         });
-        setPreviewUrl(''); // Clear preview URL
+        setPreviewUrl('');
       } else {
         const result = await response.json();
         setError(result.error || 'Failed to submit form');
