@@ -1,9 +1,6 @@
-'use client';
-
 import { useState } from 'react';
-import { PhotoIcon } from '@heroicons/react/24/outline';
 
-export default function Form() {
+export default function FormWithApi() {
   const [formData, setFormData] = useState({
     name: '',
     gender: '',
@@ -18,6 +15,7 @@ export default function Form() {
 
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [previewUrl, setPreviewUrl] = useState('');
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -28,32 +26,43 @@ export default function Form() {
   };
 
   const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return; // Handle empty file selection
+
+    // Basic file validation
+    if (!file.type.match('image.*|application/pdf')) {
+      setError('Invalid file type. Please upload a PDF, JPG, JPEG, or PNG file.');
+      return;
+    }
+
     setFormData({
       ...formData,
-      invoice: e.target.files[0],
+      invoice: file,
     });
+
+    // Generate preview URL for image files
+    if (file.type.startsWith('image/')) {
+      const url = URL.createObjectURL(file);
+      setPreviewUrl(url);
+    } else {
+      setPreviewUrl('');
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError('');
+    setSuccess('');
 
-    // Validasi Formulir
-    if (!formData.name || !formData.gender || !formData.placeOfBirth || !formData.city || !formData.idCardNumber || !formData.headline || !formData.phone || !formData.address) {
+    // Validate required fields
+    if (!validateRequiredFields(formData)) {
       setError('Please fill in all required fields.');
       return;
     }
 
-    if (!formData.invoice) {
-      setError('Please upload an invoice.');
-      return;
-    }
-
-    // Reset Error and Success Messages
-    setError('');
-    setSuccess('');
-
+    // Prepare form data
     const formDataWithFile = new FormData();
-    Object.keys(formData).forEach(key => {
+    Object.keys(formData).forEach((key) => {
       formDataWithFile.append(key, formData[key]);
     });
 
@@ -62,9 +71,11 @@ export default function Form() {
         method: 'POST',
         body: formDataWithFile,
       });
-      const result = await response.json();
+
       if (response.ok) {
+        const result = await response.json();
         setSuccess(result.message);
+        // Reset form data
         setFormData({
           name: '',
           gender: '',
@@ -76,8 +87,10 @@ export default function Form() {
           address: '',
           invoice: null,
         });
+        setPreviewUrl(''); // Clear preview URL
       } else {
-        setError('Failed to submit form');
+        const result = await response.json();
+        setError(result.error || 'Failed to submit form');
       }
     } catch (error) {
       console.error('Error submitting form:', error);
@@ -85,12 +98,18 @@ export default function Form() {
     }
   };
 
+  // Helper functions for validation
+  const validateRequiredFields = (data) => {
+    const requiredFields = ['name', 'gender', 'placeOfBirth', 'city', 'idCardNumber', 'headline', 'phone', 'address'];
+    return requiredFields.every((field) => data[field]);
+  };
+
   return (
     <div className="isolate bg-white px-6 py-24 sm:py-32 lg:px-8">
       <div className="mx-auto max-w-2xl text-center">
         <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Input your Data</h2>
         <p className="mt-2 text-lg leading-8 text-gray-600">
-          Aute magna irure deserunt veniam aliqua magna enim voluptate.
+          Please fill out the form below to submit your data.
         </p>
       </div>
       <form onSubmit={handleSubmit} className="mx-auto mt-16 max-w-xl sm:mt-20">
@@ -222,6 +241,7 @@ export default function Form() {
                 name="address"
                 value={formData.address}
                 onChange={handleChange}
+                rows="4"
                 className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
               />
             </div>
@@ -229,21 +249,20 @@ export default function Form() {
 
           <div className="sm:col-span-2">
             <label htmlFor="invoice" className="text-left block text-sm font-semibold leading-6 text-gray-900">
-              Invoice (File Upload)
+              Upload Invoice
             </label>
             <div className="mt-2.5">
               <input
                 id="invoice"
                 name="invoice"
                 type="file"
-                accept=".pdf,.jpg,.jpeg,.png"
+                accept=".pdf,image/*"
                 onChange={handleFileChange}
                 className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm"
               />
-              {formData.invoice && (
-                <div className="mt-2">
-                  <PhotoIcon className="h-6 w-6 text-gray-500" />
-                  <p className="text-sm text-gray-600">{formData.invoice.name}</p>
+              {previewUrl && (
+                <div className="mt-4">
+                  <img src={previewUrl} alt="Preview" className="max-w-xs mx-auto" />
                 </div>
               )}
             </div>

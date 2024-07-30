@@ -1,5 +1,5 @@
 import './App.css';
-import Form from './Components/Form';
+import FormWithApi from './Components/FormWithApi';
 import Header from './Components/Header';
 import Hero from './Components/Hero';
 
@@ -8,7 +8,7 @@ function App() {
     <div className="App">
       <Header/>
       <Hero/>
-    <Form/>
+    <FormWithApi/>
     </div>
   );
 }
