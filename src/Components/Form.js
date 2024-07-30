@@ -1,7 +1,7 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
-import { PhotoIcon } from '@heroicons/react/24/outline'
+import { useState } from 'react';
+import { PhotoIcon } from '@heroicons/react/24/outline';
 
 export default function Form() {
   const [formData, setFormData] = useState({
@@ -14,79 +14,76 @@ export default function Form() {
     phone: '',
     address: '',
     invoice: null,
-  })
-  
-  const [error, setError] = useState('')
-  const [success, setSuccess] = useState('')
+  });
+
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
 
   const handleChange = (e) => {
-    const { name, value } = e.target
+    const { name, value } = e.target;
     setFormData({
       ...formData,
-      [name]: value
-    })
-  }
+      [name]: value,
+    });
+  };
 
   const handleFileChange = (e) => {
     setFormData({
       ...formData,
-      invoice: e.target.files[0]
-    })
-  }
+      invoice: e.target.files[0],
+    });
+  };
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
 
     // Validasi Formulir
     if (!formData.name || !formData.gender || !formData.placeOfBirth || !formData.city || !formData.idCardNumber || !formData.headline || !formData.phone || !formData.address) {
-      setError('Please fill in all required fields.')
-      return
+      setError('Please fill in all required fields.');
+      return;
     }
 
     if (!formData.invoice) {
-      setError('Please upload an invoice.')
-      return
+      setError('Please upload an invoice.');
+      return;
     }
 
     // Reset Error and Success Messages
-    setError('')
-    setSuccess('')
+    setError('');
+    setSuccess('');
 
-    const formDataToSend = new FormData()
+    const formDataWithFile = new FormData();
     Object.keys(formData).forEach(key => {
-      if (key === 'invoice') {
-        formDataToSend.append(key, formData[key])
-      } else {
-        formDataToSend.append(key, formData[key])
-      }
-    })
+      formDataWithFile.append(key, formData[key]);
+    });
 
     try {
       const response = await fetch('/api/submit-form', {
         method: 'POST',
-        body: formDataToSend,
-      })
-      
-      if (!response.ok) {
-        throw new Error('Network response was not ok.')
+        body: formDataWithFile,
+      });
+      const result = await response.json();
+      if (response.ok) {
+        setSuccess(result.message);
+        setFormData({
+          name: '',
+          gender: '',
+          placeOfBirth: '',
+          city: '',
+          idCardNumber: '',
+          headline: '',
+          phone: '',
+          address: '',
+          invoice: null,
+        });
+      } else {
+        setError('Failed to submit form');
       }
-
-      setSuccess('Form submitted successfully!')
-      setFormData({
-        name: '',
-        gender: '',
-        placeOfBirth: '',
-        city: '',
-        idCardNumber: '',
-        headline: '',
-        phone: '',
-        address: '',
-        invoice: null,
-      })
     } catch (error) {
-      setError(`Submission failed: ${error.message}`)
+      console.error('Error submitting form:', error);
+      setError('Failed to submit form');
     }
-  }
+  };
 
   return (
     <div className="isolate bg-white px-6 py-24 sm:py-32 lg:px-8">
@@ -98,7 +95,7 @@ export default function Form() {
       </div>
       <form onSubmit={handleSubmit} className="mx-auto mt-16 max-w-xl sm:mt-20">
         <div className="grid grid-cols-1 gap-x-8 gap-y-6 sm:grid-cols-2">
-          {/* Other form fields remain the same */}
+          {/* Form fields */}
           <div className="sm:col-span-2">
             <label htmlFor="name" className="text-left block text-sm font-semibold leading-6 text-gray-900">
               Name
@@ -127,7 +124,7 @@ export default function Form() {
                 onChange={handleChange}
                 className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm"
               >
-                <option value="">Select Gender</option>
+                <option value="">Select gender</option>
                 <option value="Male">Male</option>
                 <option value="Female">Female</option>
                 <option value="Other">Other</option>
@@ -143,7 +140,7 @@ export default function Form() {
               <input
                 id="placeOfBirth"
                 name="placeOfBirth"
-                type="date"
+                type="text"
                 value={formData.placeOfBirth}
                 onChange={handleChange}
                 className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
@@ -207,7 +204,7 @@ export default function Form() {
               <input
                 id="phone"
                 name="phone"
-                type="tel"
+                type="text"
                 value={formData.phone}
                 onChange={handleChange}
                 className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
@@ -223,7 +220,6 @@ export default function Form() {
               <textarea
                 id="address"
                 name="address"
-                rows={4}
                 value={formData.address}
                 onChange={handleChange}
                 className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
@@ -231,38 +227,41 @@ export default function Form() {
             </div>
           </div>
 
-          <div className="col-span-full">
-            <label htmlFor="invoice" className="text-left block text-sm font-medium leading-6 text-gray-900">
-              Invoice
+          <div className="sm:col-span-2">
+            <label htmlFor="invoice" className="text-left block text-sm font-semibold leading-6 text-gray-900">
+              Invoice (File Upload)
             </label>
-            <div className="mt-2 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10">
-              <div className="text-center">
-                <PhotoIcon aria-hidden="true" className="mx-auto h-12 w-12 text-gray-300" />
-                <div className="mt-4 flex text-sm leading-6 text-gray-600">
-                  <label
-                    htmlFor="file-upload"
-                    className="relative cursor-pointer rounded-md bg-white font-semibold text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 hover:text-indigo-500"
-                  >
-                    <span>Upload a file</span>
-                    <input id="file-upload" name="invoice" type="file" onChange={handleFileChange} className="sr-only" />
-                  </label>
-                  <p className="pl-1">or drag and drop</p>
+            <div className="mt-2.5">
+              <input
+                id="invoice"
+                name="invoice"
+                type="file"
+                accept=".pdf,.jpg,.jpeg,.png"
+                onChange={handleFileChange}
+                className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm"
+              />
+              {formData.invoice && (
+                <div className="mt-2">
+                  <PhotoIcon className="h-6 w-6 text-gray-500" />
+                  <p className="text-sm text-gray-600">{formData.invoice.name}</p>
                 </div>
-              </div>
+              )}
             </div>
           </div>
         </div>
-        <div className="mt-10">
+
+        <div className="mt-8 flex justify-center">
           <button
             type="submit"
-            className="block w-full rounded-md bg-indigo-600 px-3.5 py-2.5 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+            className="rounded-md bg-indigo-600 px-3.5 py-1.5 text-base font-semibold leading-6 text-white shadow-sm ring-1 ring-gray-900/10 hover:ring-gray-900/20"
           >
-            Send
+            Submit
           </button>
         </div>
-        {error && <p className="mt-4 text-center text-red-600">{error}</p>}
-        {success && <p className="mt-4 text-center text-green-600">{success}</p>}
+
+        {error && <p className="mt-4 text-red-500">{error}</p>}
+        {success && <p className="mt-4 text-green-500">{success}</p>}
       </form>
     </div>
-  )
+  );
 }
