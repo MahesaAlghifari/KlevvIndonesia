@@ -15,6 +15,9 @@ export default function Form() {
     address: '',
     invoice: null,
   })
+  
+  const [error, setError] = useState('')
+  const [success, setSuccess] = useState('')
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -33,15 +36,56 @@ export default function Form() {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    // TODO: Handle form submission to your backend or API
-    // Example:
-    // await fetch('/api/submit-form', {
-    //   method: 'POST',
-    //   body: JSON.stringify(formData),
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //   },
-    // })
+
+    // Validasi Formulir
+    if (!formData.name || !formData.gender || !formData.placeOfBirth || !formData.city || !formData.idCardNumber || !formData.headline || !formData.phone || !formData.address) {
+      setError('Please fill in all required fields.')
+      return
+    }
+
+    if (!formData.invoice) {
+      setError('Please upload an invoice.')
+      return
+    }
+
+    // Reset Error and Success Messages
+    setError('')
+    setSuccess('')
+
+    const formDataToSend = new FormData()
+    Object.keys(formData).forEach(key => {
+      if (key === 'invoice') {
+        formDataToSend.append(key, formData[key])
+      } else {
+        formDataToSend.append(key, formData[key])
+      }
+    })
+
+    try {
+      const response = await fetch('/api/submit-form', {
+        method: 'POST',
+        body: formDataToSend,
+      })
+      
+      if (!response.ok) {
+        throw new Error('Network response was not ok.')
+      }
+
+      setSuccess('Form submitted successfully!')
+      setFormData({
+        name: '',
+        gender: '',
+        placeOfBirth: '',
+        city: '',
+        idCardNumber: '',
+        headline: '',
+        phone: '',
+        address: '',
+        invoice: null,
+      })
+    } catch (error) {
+      setError(`Submission failed: ${error.message}`)
+    }
   }
 
   return (
@@ -54,6 +98,7 @@ export default function Form() {
       </div>
       <form onSubmit={handleSubmit} className="mx-auto mt-16 max-w-xl sm:mt-20">
         <div className="grid grid-cols-1 gap-x-8 gap-y-6 sm:grid-cols-2">
+          {/* Other form fields remain the same */}
           <div className="sm:col-span-2">
             <label htmlFor="name" className="text-left block text-sm font-semibold leading-6 text-gray-900">
               Name
@@ -215,6 +260,8 @@ export default function Form() {
             Send
           </button>
         </div>
+        {error && <p className="mt-4 text-center text-red-600">{error}</p>}
+        {success && <p className="mt-4 text-center text-green-600">{success}</p>}
       </form>
     </div>
   )

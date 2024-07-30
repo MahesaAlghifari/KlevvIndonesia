@@ -1,26 +1,29 @@
 // pages/api/submit-form.js
-import { Client } from 'pg'
+import { Pool } from 'pg';
 
-const client = new Client({
-  connectionString: process.env.DATABASE_URL,
-})
-
-client.connect()
+// Buat koneksi ke database PostgreSQL
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL, // Pastikan ini sesuai dengan variabel lingkungan di Vercel
+});
 
 export default async function handler(req, res) {
   if (req.method === 'POST') {
-    const { name, gender, placeOfBirth, city, idCardNumber, headline, phone, address } = req.body
+    const { name, gender, placeOfBirth, city, idCardNumber, headline, phone, address, invoice } = req.body;
 
     try {
+      const client = await pool.connect();
       await client.query(
-        'INSERT INTO your_table_name(name, gender, placeOfBirth, city, idCardNumber, headline, phone, address) VALUES($1, $2, $3, $4, $5, $6, $7, $8)',
-        [name, gender, placeOfBirth, city, idCardNumber, headline, phone, address]
-      )
-      res.status(200).json({ message: 'Data saved successfully' })
+        'INSERT INTO your_table_name (name, gender, place_of_birth, city, id_card_number, headline, phone, address, invoice) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)',
+        [name, gender, placeOfBirth, city, idCardNumber, headline, phone, address, invoice]
+      );
+      client.release();
+      res.status(200).json({ message: 'Form data saved successfully!' });
     } catch (error) {
-      res.status(500).json({ error: 'Failed to save data' })
+      console.error(error);
+      res.status(500).json({ error: 'Failed to save form data' });
     }
   } else {
-    res.status(405).json({ error: 'Method not allowed' })
+    res.setHeader('Allow', ['POST']);
+    res.status(405).end(`Method ${req.method} Not Allowed`);
   }
 }
