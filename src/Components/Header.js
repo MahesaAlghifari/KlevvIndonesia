@@ -1,7 +1,4 @@
-import { Disclosure} from '@headlessui/react'
-
-
-
+import { Disclosure } from '@headlessui/react'
 
 export default function Header() {
   return (

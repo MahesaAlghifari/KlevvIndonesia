@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-export default function FormWithApi() {
+export default function Form() {
   const [formData, setFormData] = useState({
     name: '',
     gender: '',
@@ -27,9 +27,9 @@ export default function FormWithApi() {
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
-    if (!file) return; // Handle empty file selection
+    if (!file) return; 
 
-    // Basic file validation
+ 
     if (!file.type.match('image.*|application/pdf')) {
       setError('Invalid file type. Please upload a PDF, JPG, JPEG, or PNG file.');
       return;
@@ -40,7 +40,7 @@ export default function FormWithApi() {
       invoice: file,
     });
 
-    // Generate preview URL for image files
+
     if (file.type.startsWith('image/')) {
       const url = URL.createObjectURL(file);
       setPreviewUrl(url);
@@ -67,7 +67,7 @@ export default function FormWithApi() {
     });
 
     try {
-      const response = await fetch('/Server/server', {
+      const response = await fetch('/api/submit-form', {
         method: 'POST',
         body: formDataWithFile,
       });
@@ -87,7 +87,7 @@ export default function FormWithApi() {
           address: '',
           invoice: null,
         });
-        setPreviewUrl('');
+        setPreviewUrl(''); // Clear preview URL
       } else {
         const result = await response.json();
         setError(result.error || 'Failed to submit form');
@@ -143,10 +143,9 @@ export default function FormWithApi() {
                 onChange={handleChange}
                 className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm"
               >
-                <option value="">Select gender</option>
+                <option value="none">Select gender</option>
                 <option value="Male">Male</option>
                 <option value="Female">Female</option>
-                <option value="Other">Other</option>
               </select>
             </div>
           </div>
@@ -269,7 +268,7 @@ export default function FormWithApi() {
           </div>
         </div>
 
-        <div className="mt-8 flex justify-center">
+        <div className="mt-8 flex justify-start">
           <button
             type="submit"
             className="rounded-md bg-indigo-600 px-3.5 py-1.5 text-base font-semibold leading-6 text-white shadow-sm ring-1 ring-gray-900/10 hover:ring-gray-900/20"
