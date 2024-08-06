@@ -27,9 +27,8 @@ export default function Form() {
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
-    if (!file) return; 
+    if (!file) return;
 
- 
     if (!file.type.match('image.*|application/pdf')) {
       setError('Invalid file type. Please upload a PDF, JPG, JPEG, or PNG file.');
       return;
@@ -39,7 +38,6 @@ export default function Form() {
       ...formData,
       invoice: file,
     });
-
 
     if (file.type.startsWith('image/')) {
       const url = URL.createObjectURL(file);
@@ -126,6 +124,7 @@ export default function Form() {
                 type="text"
                 value={formData.name}
                 onChange={handleChange}
+                placeholder="Enter your name"
                 className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
               />
             </div>
@@ -136,17 +135,20 @@ export default function Form() {
               Gender
             </label>
             <div className="mt-2.5">
-              <select
-                id="gender"
-                name="gender"
-                value={formData.gender}
-                onChange={handleChange}
-                className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm"
-              >
-                <option value="none">Select gender</option>
-                <option value="Male">Male</option>
-                <option value="Female">Female</option>
-              </select>
+            <select
+  id="gender"
+  name="gender"
+  value={formData.gender}
+  onChange={handleChange}
+  className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 bg-white text-gray-500 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm"
+>
+  <option value="" disabled selected hidden>
+    Select gender
+  </option>
+  <option value="Male">Male</option>
+  <option value="Female">Female</option>
+</select>
+
             </div>
           </div>
 
@@ -161,6 +163,7 @@ export default function Form() {
                 type="text"
                 value={formData.placeOfBirth}
                 onChange={handleChange}
+                placeholder="Enter your place of birth"
                 className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
               />
             </div>
@@ -177,6 +180,7 @@ export default function Form() {
                 type="text"
                 value={formData.city}
                 onChange={handleChange}
+                placeholder="Enter your city"
                 className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
               />
             </div>
@@ -193,6 +197,7 @@ export default function Form() {
                 type="text"
                 value={formData.idCardNumber}
                 onChange={handleChange}
+                placeholder="Enter your ID card number"
                 className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
               />
             </div>
@@ -209,6 +214,7 @@ export default function Form() {
                 type="text"
                 value={formData.headline}
                 onChange={handleChange}
+                placeholder="Enter a headline"
                 className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
               />
             </div>
@@ -225,6 +231,7 @@ export default function Form() {
                 type="text"
                 value={formData.phone}
                 onChange={handleChange}
+                placeholder="Enter your phone number"
                 className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
               />
             </div>
@@ -240,7 +247,7 @@ export default function Form() {
                 name="address"
                 value={formData.address}
                 onChange={handleChange}
-                rows="4"
+                placeholder="Enter your address"
                 className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
               />
             </div>
@@ -248,37 +255,43 @@ export default function Form() {
 
           <div className="sm:col-span-2">
             <label htmlFor="invoice" className="text-left block text-sm font-semibold leading-6 text-gray-900">
-              Upload Invoice
+              Invoice
             </label>
             <div className="mt-2.5">
               <input
                 id="invoice"
                 name="invoice"
                 type="file"
-                accept=".pdf,image/*"
+                accept="application/pdf,image/*"
                 onChange={handleFileChange}
-                className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm"
+                className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none"
               />
               {previewUrl && (
                 <div className="mt-4">
-                  <img src={previewUrl} alt="Preview" className="max-w-xs mx-auto" />
+                  <img src={previewUrl} alt="Preview" className="max-w-full h-auto rounded-md" />
                 </div>
               )}
             </div>
           </div>
         </div>
-
-        <div className="mt-8 flex justify-start">
+        {error && (
+          <div className="mt-4 text-red-500 text-sm">
+            {error}
+          </div>
+        )}
+        {success && (
+          <div className="mt-4 text-green-500 text-sm">
+            {success}
+          </div>
+        )}
+        <div className="mt-10">
           <button
             type="submit"
-            className="rounded-md bg-indigo-600 px-3.5 py-1.5 text-base font-semibold leading-6 text-white shadow-sm ring-1 ring-gray-900/10 hover:ring-gray-900/20"
+            className="block w-full rounded-md bg-indigo-600 px-3.5 py-2.5 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
           >
             Submit
           </button>
         </div>
-
-        {error && <p className="mt-4 text-red-500">{error}</p>}
-        {success && <p className="mt-4 text-green-500">{success}</p>}
       </form>
     </div>
   );
