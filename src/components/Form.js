@@ -135,19 +135,19 @@ export default function Form() {
               Gender
             </label>
             <div className="mt-2.5">
-            <select
-  id="gender"
-  name="gender"
-  value={formData.gender}
-  onChange={handleChange}
-  className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 bg-white text-gray-500 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm"
->
-  <option value="" disabled selected hidden>
-    Select gender
-  </option>
-  <option value="Male">Male</option>
-  <option value="Female">Female</option>
-</select>
+              <select
+                id="gender"
+                name="gender"
+                value={formData.gender}
+                onChange={handleChange}
+                className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 bg-white text-gray-500 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm"
+              >
+                <option value="" disabled selected hidden>
+                  Select gender
+                </option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+              </select>
 
             </div>
           </div>
